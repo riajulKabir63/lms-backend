@@ -2,7 +2,7 @@ package com.lmsf.org.service;
 
 import com.lmsf.org.config.MyCustomUserDetails;
 import com.lmsf.org.dto.RefreshTokenDto;
-import com.lmsf.org.dto.RefreshTokenResponse;
+import com.lmsf.org.dto.TokenResponse;
 import com.lmsf.org.entity.UserInfo;
 import com.lmsf.org.exception.TokenRefreshException;
 import com.lmsf.org.repository.UserRepository;
@@ -36,7 +36,7 @@ public class RefreshTokenService {
         return new MyCustomUserDetails(user.getId(), user.getUsername(), user.getName(), user.getPassword(), roles);
     }
 
-    public RefreshTokenResponse createToken(RefreshTokenDto refreshTokenDto){
+    public TokenResponse createToken(RefreshTokenDto refreshTokenDto){
         String username = "";
         try {
             username = jwtService.extractUsername(refreshTokenDto.getToken());
@@ -51,7 +51,7 @@ public class RefreshTokenService {
         String accessToken = jwtService.generateAccessToken(userDetails);
         String newRefreshToken = jwtService.generateRefreshToken(userDetails);
 
-        return RefreshTokenResponse
+        return TokenResponse
                         .builder()
                         .accessToken(accessToken)
                         .refreshToken(newRefreshToken)

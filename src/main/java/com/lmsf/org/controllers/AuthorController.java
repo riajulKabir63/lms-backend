@@ -29,10 +29,9 @@ public class AuthorController {
     public ResponseEntity<Page<AuthorResponseDto>> fetchAuthors(@Valid PageRequestDto pageRequestDto) {
             return ResponseEntity.ok(authorService.fetchAuthors(
                     pageRequestDto.getPageNo(),
-                    pageRequestDto.getPageSize() > 0 ? pageRequestDto.getPageSize() : 10,
+                    pageRequestDto.getPageSize() > 0 ? pageRequestDto.getPageSize() : 500,
                     pageRequestDto.getSortingField() == null ? "id" : pageRequestDto.getSortingField()
             ));
-
     }
 
     @DeleteMapping("/{id}")
@@ -56,7 +55,7 @@ public class AuthorController {
             Page<BookResponseDto> books = authorService.getBooksByAuthor(
                     id,
                     pageRequestDto.getPageNo(),
-                    pageRequestDto.getPageSize() > 0 ? pageRequestDto.getPageSize() : 10,
+                    pageRequestDto.getPageSize() > 0 ? pageRequestDto.getPageSize() : 500,
                     pageRequestDto.getSortingField() == null ? "id" : pageRequestDto.getSortingField()
             );
             return ResponseEntity.ok(books);

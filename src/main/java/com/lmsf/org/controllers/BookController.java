@@ -42,26 +42,26 @@ public class BookController {
                     title,
                     publicationYear,
                     bookSearchRequestDto.getPageNo(),
-                    bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 10,
+                    bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 500,
                     bookSearchRequestDto.getSortingField() == null ? "id" : bookSearchRequestDto.getSortingField()
             ));
         else if(Objects.nonNull(title))
             return ResponseEntity.ok(bookService.getBooksByTitle(
                     title,
                     bookSearchRequestDto.getPageNo(),
-                    bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 10,
+                    bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 500,
                     bookSearchRequestDto.getSortingField() == null ? "id" : bookSearchRequestDto.getSortingField()
             ));
         else if(publicationYear > 0)
             return ResponseEntity.ok(bookService.getBooksByPublicationYear(
                     publicationYear,
                     bookSearchRequestDto.getPageNo(),
-                    bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 10,
+                    bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 500,
                     bookSearchRequestDto.getSortingField() == null ? "id" : bookSearchRequestDto.getSortingField()
             ));
         return ResponseEntity.ok(bookService.fetchBooks(
                 bookSearchRequestDto.getPageNo(),
-                bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 10,
+                bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 500,
                 bookSearchRequestDto.getSortingField() == null ? "id" : bookSearchRequestDto.getSortingField()
         ));
 
@@ -87,7 +87,7 @@ public class BookController {
         return ResponseEntity.ok(bookService.getGenres(
                 id,
                 bookSearchRequestDto.getPageNo(),
-                bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 10,
+                bookSearchRequestDto.getPageSize() > 0 ? bookSearchRequestDto.getPageSize() : 500,
                 bookSearchRequestDto.getSortingField() == null ? "id" : bookSearchRequestDto.getSortingField()
         ));
     }

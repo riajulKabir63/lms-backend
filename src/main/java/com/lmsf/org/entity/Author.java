@@ -20,8 +20,4 @@ public class Author {
     @Column(name = "email", unique = true)
     private String email;
 
-    /*@JsonManagedReference
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
-    private List<Book> book = new ArrayList<>();*/
-
 }

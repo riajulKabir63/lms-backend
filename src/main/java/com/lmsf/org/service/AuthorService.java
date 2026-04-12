@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -63,6 +64,10 @@ public class AuthorService {
     @Transactional
     public AuthorResponseDto updateAuthor(AuthorRequestDto authorRequestDto, Long id){
         Author author = authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Author not found with id : "+id));
+        if(!Objects.equals(author.getEmail(), authorRequestDto.getEmail())
+            && authorRepository.existsByEmail(authorRequestDto.getEmail())){
+            throw new ConstraintsViolationException("Email already exists");
+        }
         author.setFirstName(authorRequestDto.getFirstName());
         author.setLastName(authorRequestDto.getLastName());
         author.setEmail(authorRequestDto.getEmail());
@@ -92,8 +97,9 @@ public class AuthorService {
             throw new AuthorNotFoundException("Author not found with id : "+id);
         }
 
-        if(!bookRepository.existsByAuthorId(id))
-            throw new AuthorDeleteException("Cannot delete the Author with id '" + id + "' because it is associated with books.");
+        Author author = authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Author not found with id : "+id));
+        if(bookRepository.existsByAuthorId(id))
+            throw new AuthorDeleteException("Unable to delete the author '" + author.getFirstName() + ' ' + author.getLastName() + "' as the author is linked with existing books.");
 
         authorRepository.deleteById(id);
     }

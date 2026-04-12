@@ -1,7 +1,7 @@
 package com.lmsf.org.controllers;
 
 import com.lmsf.org.dto.RefreshTokenDto;
-import com.lmsf.org.dto.RefreshTokenResponse;
+import com.lmsf.org.dto.TokenResponse;
 import com.lmsf.org.service.JwtService;
 import com.lmsf.org.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class RefreshTokenController {
     private final JwtService jwtService;
 
     @PostMapping
-    public ResponseEntity<RefreshTokenResponse> refreshToken(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
+    public ResponseEntity<TokenResponse> refreshToken(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
         return ResponseEntity.ok(refreshTokenService.createToken(refreshTokenDto));
     }
 }

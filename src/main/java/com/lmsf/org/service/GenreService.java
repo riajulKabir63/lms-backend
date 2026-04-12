@@ -3,6 +3,7 @@ package com.lmsf.org.service;
 import com.lmsf.org.dto.GenreRequestDto;
 import com.lmsf.org.dto.GenreResponseDto;
 import com.lmsf.org.entity.Genre;
+import com.lmsf.org.exception.BookNotFoundException;
 import com.lmsf.org.exception.ConstraintsViolationException;
 import com.lmsf.org.exception.GenreDeleteException;
 import com.lmsf.org.exception.GenreNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -42,14 +44,18 @@ public class GenreService {
             throw new GenreNotFoundException("Genre not found with id : "+id);
         }
 
+        Genre genre = genreRepository.findById(id).orElseThrow(() -> new GenreNotFoundException("Genre not found with id : "+id));
+
         if(bookRepository.existsByGenresId(id))
-            throw new GenreDeleteException("Cannot delete the genre with id '" + id + "' because it is associated with books.");
+            throw new GenreDeleteException("Unable to delete the '" + genre.getName() + "' because it is associated with existing books.");
         genreRepository.deleteById(id);
     }
 
     @Transactional
     public GenreResponseDto updateGenre(Long id, GenreRequestDto genreRequestDto){
-        if(genreRepository.existsByName(genreRequestDto.getName())){
+        Genre genre = genreRepository.findById(id).orElseThrow(() -> new GenreNotFoundException("Genre not found with id : "+id));
+        if(!Objects.equals(genre.getName(), genreRequestDto.getName())
+            && genreRepository.existsByName(genreRequestDto.getName())){
             throw new ConstraintsViolationException("Genre already exists");
         }
         Genre newGenre = genreRepository.findById(id).orElseThrow(() -> new GenreNotFoundException("Genre not found with id : "+id));
@@ -70,6 +76,8 @@ public class GenreService {
         Pageable pageable = PageRequest.of(pageNo, pageSize).withSort(sort);
         Page<Genre> pageGenres = genreRepository.findAll(pageable);
         List<Genre> genres = pageGenres.getContent();
+        if(genres.isEmpty())
+            throw new GenreNotFoundException("No genres were found");
         List<GenreResponseDto> genreResponseDto = genres.stream().map(genre -> modelMapper.map(genre, GenreResponseDto.class)).collect(Collectors.toList());
         return new PageImpl<>(genreResponseDto, pageable, genreResponseDto.size());
     }

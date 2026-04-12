@@ -48,7 +48,7 @@ public class GenreController {
     public ResponseEntity<Page<GenreResponseDto>> fetchGenres(@Valid PageRequestDto pageRequestDto){
             return ResponseEntity.ok(genreService.fetchGenres(
                     pageRequestDto.getPageNo(),
-                    pageRequestDto.getPageSize() > 0 ? pageRequestDto.getPageSize() : 10,
+                    pageRequestDto.getPageSize() > 0 ? pageRequestDto.getPageSize() : 500,
                     pageRequestDto.getSortingField() == null ? "id" : pageRequestDto.getSortingField()
             ));
     }
@@ -58,7 +58,7 @@ public class GenreController {
         return ResponseEntity.ok(bookService.getBooksByGenre(
                 id,
                 pageRequestDto.getPageNo(),
-                pageRequestDto.getPageSize() > 0 ? pageRequestDto.getPageSize() : 10,
+                pageRequestDto.getPageSize() > 0 ? pageRequestDto.getPageSize() : 500,
                 pageRequestDto.getSortingField() == null ? "id" : pageRequestDto.getSortingField()
         ));
     }
