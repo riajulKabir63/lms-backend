@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: lms-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lms
+    ports:
+      - "5433:5432"
+
+  backend:
+    build: .
+    container_name: lms-backend
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/lms
+    depends_on:
+      - db
+
+  frontend:
+    build: ../lms-frontend
+    container_name: lms-frontend-ui
+    ports:
+      - "4200:8080"
+    depends_on:
+      - backend
+
+
