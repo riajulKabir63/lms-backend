@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:latest
-    container_name: lms-postgres
+    container_name: lms-postgres-prod
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -11,10 +11,10 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - lms-db-data:/var/lib/postgresql/data
+      - lms-db-prod-data:/var/lib/postgresql/data
 
   backend:
-    build: .
+    image: ghcr.io/riajulkabir63/lms-backend:latest
     container_name: lms-backend
     ports:
       - "8081:8080"
@@ -24,13 +24,13 @@ services:
       - db
 
   frontend:
-    build: ../lms-frontend
+    image: ghcr.io/riajulkabir63/lms-frontend:latest
     container_name: lms-frontend-ui
     ports:
       - "4200:8080"
     depends_on:
       - backend
 volumes:
-  lms-db-data:
+  lms-db-prod-data:
 
 
