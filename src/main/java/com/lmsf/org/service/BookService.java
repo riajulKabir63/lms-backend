@@ -1,5 +1,6 @@
 package com.lmsf.org.service;
 
+import com.lmsf.org.config.RabbitMQConfig;
 import com.lmsf.org.dto.AuthorResponseDto;
 import com.lmsf.org.dto.BookRequestDto;
 import com.lmsf.org.dto.BookResponseDto;
@@ -16,6 +17,9 @@ import com.lmsf.org.repository.GenreRepository;
 import com.lmsf.org.repository.IssuedBookRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +38,10 @@ public class BookService {
     private final GenreRepository genreRepository;
     private final IssuedBookRepository issuedBookRepository;
     private final ModelMapper modelMapper;
+    private final RabbitTemplate rabbitTemplate;
 
     @Transactional
+    @CacheEvict(value = "books", allEntries = true)
     public BookResponseDto createBook(BookRequestDto bookRequestDto) {
         Book book = modelMapper.map(bookRequestDto, Book.class);
 
@@ -54,6 +60,12 @@ public class BookService {
 
         book.setGenres(genres);
         bookRepository.save(book);
+
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE_NAME,
+                RabbitMQConfig.ROUTING_KEY,
+                book
+        );
         return modelMapper.map(book, BookResponseDto.class);
     }
 
@@ -107,7 +119,7 @@ public class BookService {
                 .stream()
                 .map(book -> modelMapper.map(book, BookResponseDto.class))
                 .collect(Collectors.toList());
-        return new PageImpl<>(bookResponseDtos, pageable, bookResponseDtos.size());
+        return new PageImpl<>(bookResponseDtos, pageable, pageBooks.getTotalElements());
     }
 
     @Transactional(readOnly = true)
@@ -124,10 +136,11 @@ public class BookService {
                 .stream()
                 .map(book -> modelMapper.map(book, BookResponseDto.class))
                 .collect(Collectors.toList());
-        return new PageImpl<>(bookResponseDtos, pageable, bookResponseDtos.size());
+        return new PageImpl<>(bookResponseDtos, pageable, pageBooks.getTotalElements());
 
     }
 
+    @Cacheable(value = "books")
     @Transactional(readOnly = true)
     public BookResponseDto getBook(Long id) {
         Book book =  bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found with id : "+id));
@@ -141,6 +154,7 @@ public class BookService {
         return modelMapper.map(author, AuthorResponseDto.class);
     }
 
+    @CacheEvict(value = "books", allEntries = true)
     @Transactional
     public BookResponseDto updateBook(BookRequestDto bookRequestDto, Long id){
         Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found with id : "+id));
@@ -163,6 +177,7 @@ public class BookService {
         return modelMapper.map(book, BookResponseDto.class);
     }
 
+    @CacheEvict(value = "books", allEntries = true)
     @Transactional
     public void deleteBook(Long id){
         if(!bookRepository.existsById(id))
@@ -198,6 +213,6 @@ public class BookService {
                 .stream()
                 .map(book -> modelMapper.map(book, BookResponseDto.class))
                 .collect(Collectors.toList());
-        return new PageImpl<>(bookResponseDtos, pageable, bookResponseDtos.size());
+        return new PageImpl<>(bookResponseDtos, pageable, pageBooks.getTotalElements());
     }
 }
