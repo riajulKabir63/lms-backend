@@ -1,28 +1,20 @@
 package com.lmsf.org.service;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.lmsf.org.dto.LoginDto;
 import com.lmsf.org.dto.TokenResponse;
-import com.lmsf.org.entity.UserInfo;
 import com.lmsf.org.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import netscape.javascript.JSObject;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
