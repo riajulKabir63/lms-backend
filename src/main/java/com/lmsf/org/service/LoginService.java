@@ -24,8 +24,7 @@ public class LoginService {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
-    private final UserRepository Bad_Name_Repository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
