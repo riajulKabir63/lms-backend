@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Checkstyle with Reviewdog
-        uses: reviewdog/action-checkstyle@v1
+        uses: dbelyaev/action-checkstyle@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
