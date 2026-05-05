@@ -1,0 +1,25 @@
+name: Automated Code Review
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  linter:
+    name: Checkstyle Review
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Checkstyle with Reviewdog
+        uses: dbelyaev/action-checkstyle@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: warning
