@@ -1,0 +1,7 @@
+releases:
+  - name: my-lms-stack
+    namespace: default
+    chart: ./lms-app
+    values:
+      - backend:
+          replicaCount: 3

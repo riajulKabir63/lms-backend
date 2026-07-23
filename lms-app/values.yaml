@@ -1,0 +1,2 @@
+backend:
+  replicaCount: 2
